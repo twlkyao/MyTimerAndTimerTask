@@ -27,7 +27,8 @@ public class MainActivity extends AppCompatActivity {
     private Button btn_pause_resume;
 
     /**
-     * The <code>TextView</code> to show the time in seconds
+     * The <code>TextView</code> to show the time in seconds.<br>
+     * The time on the TextView is not accurate because of the time of code execution.
      */
     private TextView textView;
 
@@ -54,9 +55,10 @@ public class MainActivity extends AppCompatActivity {
      */
     private int count = 1;
 
-    private  Handler mHandler = new Handler() {
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            Log.d(TAG, "handleMessage " + System.currentTimeMillis());
             Log.d(TAG, "handleMessage msg.what=" + msg.what);
             if (UPDATE_TEXTVIEW == msg.what) {
                 if (null != textView) {
@@ -120,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "onClick " + System.currentTimeMillis());
                 isStop = !isStop;
                 if (!isStop) {
                     Log.d(TAG, "stop");
@@ -160,20 +163,22 @@ public class MainActivity extends AppCompatActivity {
             timerTask = new TimerTask() {
                 @Override
                 public void run() {
+                    Log.d(TAG, "sendEmptyMessage " + System.currentTimeMillis());
                     mHandler.sendEmptyMessage(UPDATE_TEXTVIEW);
-                   do{
+                    do {
                         try {
                             Log.d(TAG, "sleep " + PERIOD);
                             Thread.sleep(PERIOD);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                    } while(isPause);
+                    } while (isPause);
+                    Log.d(TAG, "count++ " + System.currentTimeMillis());
                     count++;
                 }
             };
         }
-            timer.schedule(timerTask, DELAY, PERIOD);
+        timer.schedule(timerTask, DELAY, PERIOD);
     }
 
     /**
