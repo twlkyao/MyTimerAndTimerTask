@@ -15,7 +15,7 @@
     <TextView
         android:id="@+id/textview"
         android:layout_width="wrap_content"
-        android:text="0"
+        android:text="The time has elapsed 0s"
         android:layout_height="wrap_content" />
     <Button
         android:id="@+id/start_stop"

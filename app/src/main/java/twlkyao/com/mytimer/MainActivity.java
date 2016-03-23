@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final static int PERIOD = 1000;
 
-    private final static int DELAY = 1000;
+    private final static int DELAY = 0;
 
     /**
      * The type to update <code>TextView</code>
@@ -49,18 +49,19 @@ public class MainActivity extends AppCompatActivity {
     private final static int UPDATE_TEXTVIEW = 1;
 
     /**
-     * Used to record the time in seconds
+     * Used to record the time in seconds,<br>
+     * because the timer delay is 1 second, so the start will be 1.
      */
-    private int count = 0;
+    private int count = 1;
 
-    private Handler mHandler = new Handler() {
+    private  Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             Log.d(TAG, "handleMessage msg.what=" + msg.what);
             if (UPDATE_TEXTVIEW == msg.what) {
                 if (null != textView) {
                     Log.d(TAG, "count=" + count);
-                    textView.setText("Time has ellipsed "+ count + "s");
+                    textView.setText(getString(R.string.time_elapse, count));
                 }
             }
         }
@@ -121,13 +122,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 isStop = !isStop;
                 if (!isStop) {
-                    Log.d(TAG, "start");
+                    Log.d(TAG, "stop");
                     starTimer();
                     btn_start_stop.setText("stop");
                 } else {
-                    Log.d(TAG, "stop");
+                    Log.d(TAG, "start");
                     stopTimer();
+                    btn_start_stop.setText("start");
                     count = 0;
+                    mHandler.sendEmptyMessage(UPDATE_TEXTVIEW);
                 }
             }
         });
@@ -158,21 +161,19 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     mHandler.sendEmptyMessage(UPDATE_TEXTVIEW);
-                    do{
+                   do{
                         try {
                             Log.d(TAG, "sleep " + PERIOD);
                             Thread.sleep(PERIOD);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                    }while(isPause);
+                    } while(isPause);
                     count++;
                 }
             };
         }
-        if (null != timer && null != timerTask) {
             timer.schedule(timerTask, DELAY, PERIOD);
-        }
     }
 
     /**
